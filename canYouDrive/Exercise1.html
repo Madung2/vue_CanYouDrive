@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise 1
+  </title>
+  <link rel="stylesheet" href="https://unpkg.com/normalize.css/normalize.css">
+  <style type="text/css">
+    body {
+      font-family: monospace;
+      padding: 20px;
+      font-size: 2em;
+    }
+    .right {
+        color:green
+    }
+    .wrong {
+        color:red
+    }
+  </style>
+  <script src="https://unpkg.com/vue@3.4.0"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+        LeftTime : {{ leftTime }}
+    </div>
+    <div>
+        ***
+    </div>
+    <div>
+        Question: {{currentQuestion}}?
+    </div>
+    <div>
+        Answer:<input v-model="inputValue"/>
+    </div>
+    <div>
+        ***
+    </div>
+    <div>
+        Your Input: {{inputValue}}. Your Answer: 
+        <span :class="{right:checkAnswer==='Right', wrong:checkAnswer==='Wrong'}">{{checkAnswer}}</span>
+    </div>
+
+  </div>
+  <script>
+    const { createApp, ref, computed } = Vue;
+    const App = {
+      setup() {
+        let inputValue = ref(null);
+        let leftTime = ref(10);
+        let currentIndex = ref(0);
+        let score = ref(0);
+        
+        const questions = [
+            'How much is 2+2',
+            'How much is 3*5+1',
+            'What is the rest from 3/1'
+        ]
+        const answer = [
+            '4',
+            '16',
+            '0'
+        ]
+        let currentQuestion = computed(()=>{
+                return questions[currentIndex.value]
+            })
+
+        const timer = setInterval(()=>{
+            if (leftTime.value>0) {
+                leftTime.value = leftTime.value -1
+            } else {
+                leftTime.value = 10
+            }
+        }, 1000)
+        const indexNumPlusOne = () => {
+            currentIndex.value++;
+        }
+
+        let checkAnswer = computed(()=>{
+            if (inputValue.value ===answer[currentIndex.value]){
+                return 'Right'
+            } else {
+                return 'Wrong'
+            }
+        })
+        let areWeDone  = computed(
+            () => {
+                console.log(leftTime.value)
+                if (leftTime.value === 0) {
+                    if (currentIndex.value ===2){
+                        return True
+                    } else {
+                        indexNumPlusOne()
+                    }
+                }
+            }
+        )
+
+
+
+
+
+
+
+        return { leftTime, currentQuestion, inputValue, checkAnswer, areWeDone }
+
+      },
+    };
+
+    createApp(App).mount('#app');
+  </script>
+</body>
+
+</html>
